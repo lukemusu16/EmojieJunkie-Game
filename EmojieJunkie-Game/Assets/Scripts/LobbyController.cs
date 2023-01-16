@@ -35,8 +35,9 @@ public class LobbyController : MonoBehaviour
 
         startBTN = GameObject.Find("StartBTN");
         startBTN.GetComponent<Button>().onClick.AddListener(() => {
-            GlobalValues.State = GameState.CONVERT;
-            SceneManager.LoadScene("MainGame");
+            GlobalValues.State = (int)GameState.CONVERT;
+            print(string.Format("lobbyCode: {0}, State: {1}", GlobalValues.LobbyCode, GlobalValues.State));
+            FirebaseDatabaseController.Instance.UpdateGameState(GlobalValues.LobbyCode, GlobalValues.State);
         });
         startBTN.SetActive(false);
 

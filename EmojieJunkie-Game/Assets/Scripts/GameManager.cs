@@ -55,17 +55,17 @@ public class GameManager : MonoBehaviour
         currentGuesser   = GlobalValues.Player2;
 
         GenerateRandomPhrase();
-        GlobalValues.State = GameState.CONVERT;
+        GlobalValues.State = (int)GameState.CONVERT;
         StartCoroutine(StartTimer(5));
     }
 
     private void Update()
     {
-        if (timerExpired && GlobalValues.State == GameState.CONVERT)
+        if (timerExpired && GlobalValues.State == (int)GameState.CONVERT)
         {
             print("Give Full Points to Guesser");
         }
-        else if (timerExpired && GlobalValues.State == GameState.GUESS)
+        else if (timerExpired && GlobalValues.State == (int)GameState.GUESS)
         {
             print("Bozo didnt guess it");
         }

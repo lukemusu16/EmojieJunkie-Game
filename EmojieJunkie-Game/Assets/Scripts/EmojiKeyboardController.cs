@@ -47,7 +47,7 @@ public class EmojiKeyboardController : MonoBehaviour
             gm.StopAllCoroutines();
             keyboard.SetActive(false);
             submitted = true;
-            GlobalValues.State = GameState.GUESS;
+            GlobalValues.State = (int)GameState.GUESS;
             StartCoroutine(gm.StartTimer(5));
 
         });
