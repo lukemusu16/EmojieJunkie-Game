@@ -19,15 +19,13 @@ public class GameManager : MonoBehaviour
 {
     private EmojiKeyboardController ekc;
 
-    private string currentGuesser;
-    private string currentConverter;
 
     public GameObject chosenSen;
     public GameObject hiddenSen;
     public GameObject guessing;
-    private GameObject timer;
-    private GameObject waitingTXT;
-    private GameObject emojiKeyboard;
+    public GameObject timer;
+    public GameObject waitingTXT;
+    public GameObject emojiKeyboard;
 
     private List<string> senteces = new List<string>();
 
@@ -55,28 +53,29 @@ public class GameManager : MonoBehaviour
             CheckGuess(guessing.transform.GetChild(0).GetComponent<TMP_InputField>().text);
         });
 
-        currentConverter = GlobalValues.Player1;
-        currentGuesser   = GlobalValues.Player2;
-        
+        GlobalValues.CurrentConverter = GlobalValues.Player1;
+        GlobalValues.CurrentGuesser   = GlobalValues.Player2;
 
-        if (GlobalValues.ThisPlayer == currentConverter)
+        if (GlobalValues.State == (int)GameState.CONVERT)
         {
-            ShowConvert();
-            GenerateRandomPhrase();
-            GlobalValues.State = (int)GameState.CONVERT;
-            //StartCoroutine(StartTimer(120));
+            if (GlobalValues.ThisPlayer == GlobalValues.CurrentConverter)
+            {
+                ShowConvert();
+                GenerateRandomPhrase();
+                GlobalValues.State = (int)GameState.CONVERT;
+                //StartCoroutine(StartTimer(120));
+            }
+            else
+            {
+                ShowGuessing();
+                //StartCoroutine(StartTimer(120));
+            }
         }
-        else
-        {
-            ShowGuessing();
-            //StartCoroutine(StartTimer(120));
-        }
-
-        
     }
 
     private void Update()
     {
+
         if (timerExpired && GlobalValues.State == (int)GameState.CONVERT)
         {
             print("Give Full Points to Guesser");
@@ -111,7 +110,7 @@ public class GameManager : MonoBehaviour
         return "";
     }
 
-    private string HideString(string textToHide)
+    public string HideString(string textToHide)
     {
         hiddenSen.GetComponent<TextMeshProUGUI>().text = "";
         string toHideString = textToHide;

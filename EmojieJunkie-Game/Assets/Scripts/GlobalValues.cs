@@ -6,6 +6,8 @@ public static class GlobalValues
 {
     private static string player1 = "";
     private static string player2 = "";
+    private static string currentGuesser = "";
+    private static string currentConverter = "";
     private static int state;
     private static string thisPlayer = "";
     private static string lobbyCode = "";
@@ -46,6 +48,11 @@ public static class GlobalValues
     { get { return gameObject3; } set { gameObject3 = value; } }
     public static string GameObject4
     { get { return gameObject4; } set { gameObject4 = value; } }
+
+    public static string CurrentGuesser
+    { get { return currentGuesser; } set { currentGuesser = value; } }
+    public static string CurrentConverter
+    { get { return currentConverter; } set { currentConverter = value; } }
 
 
 }

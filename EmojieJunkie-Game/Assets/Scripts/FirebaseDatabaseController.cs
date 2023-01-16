@@ -12,10 +12,12 @@ using System.ComponentModel;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Linq;
+using UnityEngine.UI;
 
 public class FirebaseDatabaseController : MonoBehaviour
 {
     private DatabaseReference _reference;
+    private GameManager gm;
 
     public GameObject startBTN;
 
@@ -35,6 +37,7 @@ public class FirebaseDatabaseController : MonoBehaviour
         Instance = this;
         _reference = FirebaseDatabase.DefaultInstance.RootReference;
         startBTN = GameObject.Find("StartBTN");
+        
     }
 
     public void CreateLobby(String lobbyCode, String player1Name)
@@ -164,7 +167,6 @@ public class FirebaseDatabaseController : MonoBehaviour
 
 
 
-
         if (GlobalValues.State == (int)GameState.LOBBY)
         {
             TextMeshProUGUI p1TXT = GameObject.Find("Player1TXT").GetComponent<TextMeshProUGUI>();
@@ -179,10 +181,56 @@ public class FirebaseDatabaseController : MonoBehaviour
             }
         }
 
-        if (GlobalValues.State == (int)GameState.CONVERT)
+        if (GlobalValues.State == (int)GameState.CONVERT && SceneManager.GetActiveScene().name == "MainGame")
         {
 
+           
+        }
+        else if(GlobalValues.State == (int)GameState.CONVERT && SceneManager.GetActiveScene().name != "MainGame")
+        {
+            print("bruh");
             SceneManager.LoadScene("MainGame");
+        }
+
+        if (GlobalValues.State == (int)GameState.GUESS)
+        {
+            if (GlobalValues.ThisPlayer == GlobalValues.CurrentGuesser)
+            {
+                print("guesser");
+                gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+                gm.hiddenSen.GetComponent<TextMeshProUGUI>().text = gm.HideString(GlobalValues.SecretPhrase);
+                gm.hiddenSen.SetActive(true);
+                gm.guessing.SetActive(true);
+                gm.waitingTXT.SetActive(false);
+
+                GameObject emojiPrefab = Resources.Load<GameObject>("Emoji");
+                EmojiKeyboardController ekc = GameObject.Find("EmojiKeyboard").GetComponent<EmojiKeyboardController>();
+                if ((string)snapshotData["gameObjects0"] != string.Empty)
+                {
+                    ekc.keyboard.SetActive(true);
+                    Sprite img = GameObject.Find(GlobalValues.GameObject0).GetComponent<Image>().sprite;
+                    GameObject newImg = Instantiate(emojiPrefab, GameObject.Find("EmojiContainer").transform);
+                    newImg.GetComponent<Image>().sprite = img;
+                    ekc.keyboard.SetActive(false);
+                }
+                /*if (GlobalValues.GameObject1 != string.Empty)
+                    GameObject.Find(GlobalValues.GameObject1).GetComponent<Image>().sprite;
+                if (GlobalValues.GameObject2 != string.Empty)
+                    GameObject.Find(GlobalValues.GameObject2).GetComponent<Image>().sprite;
+                if (GlobalValues.GameObject3 != string.Empty)
+                    GameObject.Find(GlobalValues.GameObject3).GetComponent<Image>().sprite;
+                if (GlobalValues.GameObject4 != string.Empty)
+                    GameObject.Find(GlobalValues.GameObject4).GetComponent<Image>().sprite;*/
+            }
+            else
+            {
+                print("converter");
+                gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+                gm.chosenSen.SetActive(true);
+                gm.waitingTXT.SetActive(true);
+                gm.hiddenSen.SetActive(false);
+                gm.guessing.SetActive(false);
+            }
         }
 
     }

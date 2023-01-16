@@ -49,23 +49,41 @@ public class EmojiKeyboardController : MonoBehaviour
 
 
             GlobalValues.GameObject0 = emojis[0].name;
-            GlobalValues.GameObject1 = emojis[1].name;
-            GlobalValues.GameObject2 = emojis[2].name;
-            GlobalValues.GameObject3 = emojis[3].name;
-            GlobalValues.GameObject4 = emojis[4].name;
 
+            if (emojis.Count == 2)
+                GlobalValues.GameObject1 = emojis[1].name;
+
+            if (emojis.Count == 3)
+            {
+                GlobalValues.GameObject1 = emojis[1].name;
+                GlobalValues.GameObject2 = emojis[2].name;
+            }
+            if (emojis.Count == 4)
+            {
+                GlobalValues.GameObject1 = emojis[1].name;
+                GlobalValues.GameObject2 = emojis[2].name;
+                GlobalValues.GameObject3 = emojis[3].name;
+            }
+            if (emojis.Count == 5)
+            {
+                GlobalValues.GameObject1 = emojis[1].name;
+                GlobalValues.GameObject2 = emojis[2].name;
+                GlobalValues.GameObject3 = emojis[3].name;
+                GlobalValues.GameObject4 = emojis[4].name;
+            }
+
+            GlobalValues.State = (int)GameState.GUESS;
+            FirebaseDatabaseController.Instance.UpdateGameState(GlobalValues.LobbyCode, GlobalValues.State);
             FirebaseDatabaseController.Instance.UpdateGameObjects(GlobalValues.LobbyCode, GlobalValues.GameObject0, GlobalValues.GameObject1, GlobalValues.GameObject2, GlobalValues.GameObject3, GlobalValues.GameObject4);
             
             keyboard.SetActive(false);
             submitted = true;
-            GlobalValues.State = (int)GameState.GUESS;
-            StartCoroutine(gm.StartTimer(5));
+            
+            
+            StartCoroutine(gm.StartTimer(60));
 
         });
         confirmBTN.SetActive(false);
- 
-        gm.hiddenSen.SetActive(false);
-        gm.guessing.SetActive(false);
 
 
         GameObject emojiPrefab = Resources.Load<GameObject>("Emoji");
@@ -85,7 +103,7 @@ public class EmojiKeyboardController : MonoBehaviour
                 newSprite.GetComponent<UnityEngine.UI.Image>().sprite = emoji;
 
                 newSprite.GetComponent<Button>().onClick.AddListener(() => {
-                    if (emojis.Count < 5)
+                    if (emojis.Count < 6)
                     {
                         GameObject selectedEmoji = Instantiate(emojiPrefab, GameObject.Find("EmojiContainer").transform);
                         selectedEmoji.name = newSprite.name;
@@ -108,14 +126,6 @@ public class EmojiKeyboardController : MonoBehaviour
         { 
             backBTN.SetActive(false);
             confirmBTN.SetActive(false);
-
-            if (submitted)
-            { 
-                gm.chosenSen.SetActive(false);
-                gm.hiddenSen.SetActive(true);
-                gm.guessing.SetActive(true);
-                
-            }
         }
     }
 
