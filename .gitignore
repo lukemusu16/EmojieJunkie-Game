@@ -1,6 +1,7 @@
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
+EmojieJunkie-Game_clone_0/
 
 # Excluding Firebase SDK
 EmojieJunkie-Game/[Aa]ssets/Firebase/Editor Default Resources/
