@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class LobbyController : MonoBehaviour
 {
     private TMP_InputField lobbyCodeINP;
     private TMP_InputField playerNameINP;
+
+    private GameObject startBTN;
 
     private string lobbyText;
 
@@ -29,6 +33,11 @@ public class LobbyController : MonoBehaviour
         playerNameINP = GameObject.Find("PlayerNameINP").GetComponent<TMP_InputField>();
         lobbyCodeINP = GameObject.Find("LobbyCodeINP").GetComponent<TMP_InputField>();
 
+        startBTN = GameObject.Find("StartBTN");
+        startBTN.GetComponent<Button>().onClick.AddListener(() => {
+            SceneManager.LoadScene("GameScene");
+        });
+        startBTN.SetActive(false);
 
         mc = GameObject.Find("MenuController").GetComponent<MenuController>();
         mc.GoToPlayerNameModal();
@@ -110,6 +119,8 @@ public class LobbyController : MonoBehaviour
         {
             playerJoined = true;
             checking = false;
+            startBTN.SetActive(true);
+            
         }
         yield return new WaitForSeconds(2);
 

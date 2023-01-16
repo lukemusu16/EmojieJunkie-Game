@@ -39,7 +39,9 @@ public class FirebaseDatabaseController : MonoBehaviour
         TextMeshProUGUI p1TXT = GameObject.Find("Player1TXT").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI p2TXT = GameObject.Find("Player2TXT").GetComponent<TextMeshProUGUI>();
 
-        p1TXT.text = lobby.player1Name;
+        GlobalValues.Player1 = lobby.player1Name;
+
+        p1TXT.text = GlobalValues.Player1;
         p2TXT.text = "Waiting for player";
     }
 
@@ -64,8 +66,11 @@ public class FirebaseDatabaseController : MonoBehaviour
                 TextMeshProUGUI p1TXT = GameObject.Find("Player1TXT").GetComponent<TextMeshProUGUI>();
                 TextMeshProUGUI p2TXT = GameObject.Find("Player2TXT").GetComponent<TextMeshProUGUI>();
 
-                p1TXT.text = (string)snapshotData["player1Name"];
-                p2TXT.text = (string)snapshotData["player2Name"];
+                GlobalValues.Player1 = (string)snapshotData["player1Name"];
+                GlobalValues.Player2 = (string)snapshotData["player2Name"];
+
+                p1TXT.text = GlobalValues.Player1;
+                p2TXT.text = GlobalValues.Player2;
 
                 GameObject.Find("StartBTN").SetActive(false);
             }
@@ -83,7 +88,8 @@ public class FirebaseDatabaseController : MonoBehaviour
             if (!snapshotData["player2Name"].Equals(""))
             {
                 TextMeshProUGUI p2TXT = GameObject.Find("Player2TXT").GetComponent<TextMeshProUGUI>();
-                p2TXT.text = (string)snapshotData["player2Name"];
+                GlobalValues.Player2 = (string)snapshotData["player2Name"];
+                p2TXT.text = GlobalValues.Player2;
                 return true;
             };
 

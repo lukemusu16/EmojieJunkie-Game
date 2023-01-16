@@ -6,27 +6,58 @@ using UnityEngine.UI;
 
 public class EmojiKeyboardController : MonoBehaviour
 {
+    private GameManager gm;
+
+
     private int rows = 30;
     private int cols = 30;
     private int spriteWidth = 20;
     private int spriteHeight = 20;
 
     private GameObject backBTN;
+    public GameObject confirmBTN;
+
+    public GameObject keyboard;
+
+    public bool submitted;
 
     public Texture2D img;
 
-    List<GameObject> emojis = new List<GameObject>();
+    public List<GameObject> emojis = new List<GameObject>();
+
+    private void Awake()
+    {
+        keyboard = GameObject.Find("EmojiKeyboard");
+        backBTN = GameObject.Find("BackspaceBTN");
+        confirmBTN = GameObject.Find("ConfirmBTN");
+    }
 
     public void Start()
     {
-        backBTN = GameObject.Find("BackspaceBTN");
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         backBTN.GetComponent<Button>().onClick.AddListener(() => {
             RemoveEmoji();
         });
+
         backBTN.SetActive(false);
 
+        confirmBTN.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            gm.StopAllCoroutines();
+            keyboard.SetActive(false);
+            submitted = true;
+            StartCoroutine(gm.StartTimer(60f));
+
+        });
+        confirmBTN.SetActive(false);
+ 
+        gm.hiddenSen.SetActive(false);
+        gm.guessing.SetActive(false);
+
+
         GameObject emojiPrefab = Resources.Load<GameObject>("Emoji");
-        //Texture2D sourceImage = GetComponent<SpriteRenderer>().sprite.texture;
+        
         int width = img.width;
         int height = img.height;
 
@@ -54,13 +85,23 @@ public class EmojiKeyboardController : MonoBehaviour
 
     private void Update() 
     {
-        if (emojis.Count > 0)
+        if (emojis.Count > 0 && !submitted)
         {
             backBTN.SetActive(true);
+            confirmBTN.SetActive(true);
         }
         else
         { 
             backBTN.SetActive(false);
+            confirmBTN.SetActive(false);
+
+            if (submitted)
+            { 
+                gm.chosenSen.SetActive(false);
+                gm.hiddenSen.SetActive(true);
+                gm.guessing.SetActive(true);
+                
+            }
         }
     }
 
