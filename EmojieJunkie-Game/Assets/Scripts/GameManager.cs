@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public GameObject hiddenSen;
     public GameObject guessing;
     private GameObject timer;
+    private GameObject waitingTXT;
+    private GameObject emojiKeyboard;
 
     private List<string> senteces = new List<string>();
 
@@ -39,6 +41,8 @@ public class GameManager : MonoBehaviour
         hiddenSen = GameObject.Find("HiddenSentence");
         guessing = GameObject.Find("Guessing");
         timer = GameObject.Find("Timer");
+        waitingTXT = GameObject.Find("WaitingTXT");
+        emojiKeyboard = GameObject.Find("EmojiKeyboard");
     }
 
     // Start is called before the first frame update
@@ -54,9 +58,20 @@ public class GameManager : MonoBehaviour
         currentConverter = GlobalValues.Player1;
         currentGuesser   = GlobalValues.Player2;
 
-        GenerateRandomPhrase();
-        GlobalValues.State = (int)GameState.CONVERT;
-        StartCoroutine(StartTimer(5));
+        if (GlobalValues.ThisPlayer == currentConverter)
+        {
+            ShowConvert();
+            GenerateRandomPhrase();
+            GlobalValues.State = (int)GameState.CONVERT;
+            //StartCoroutine(StartTimer(120));
+        }
+        else
+        {
+            ShowGuessing();
+            //StartCoroutine(StartTimer(120));
+        }
+
+        
     }
 
     private void Update()
@@ -69,6 +84,8 @@ public class GameManager : MonoBehaviour
         {
             print("Bozo didnt guess it");
         }
+
+
     }
 
     private string ReadFile()
@@ -118,7 +135,10 @@ public class GameManager : MonoBehaviour
     private void GenerateRandomPhrase()
     {
         chosenSen.GetComponent<TextMeshProUGUI>().text = senteces[Random.Range(0, senteces.Count)];
-        hiddenSen.GetComponent<TextMeshProUGUI>().text = HideString(chosenSen.GetComponent<TextMeshProUGUI>().text);
+        GlobalValues.SecretPhrase = chosenSen.GetComponent<TextMeshProUGUI>().text;
+
+        hiddenSen.GetComponent<TextMeshProUGUI>().text = HideString(GlobalValues.SecretPhrase);
+        FirebaseDatabaseController.Instance.UpdatePhrase(GlobalValues.LobbyCode, GlobalValues.SecretPhrase);
     }
 
     private void CheckGuess(string guess)
@@ -150,6 +170,20 @@ public class GameManager : MonoBehaviour
     public void startTurn(string converter, string guesser)
     { 
         
+    }
+
+    private void ShowConvert()
+    {
+        guessing.SetActive(false);
+        waitingTXT.SetActive(false);
+        hiddenSen.SetActive(false);
+    }
+
+    private void ShowGuessing()
+    { 
+        emojiKeyboard.SetActive(false);
+        chosenSen.SetActive(false);
+
     }
 
         

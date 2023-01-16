@@ -70,6 +70,7 @@ public class EmojiKeyboardController : MonoBehaviour
                 int yPos = y * spriteHeight;
                 Sprite emoji = Sprite.Create(img, new Rect(xPos, yPos, spriteWidth, spriteHeight), new Vector2(10f, 10f));
                 GameObject newSprite = Instantiate(emojiPrefab, GameObject.Find("Content").transform);
+                newSprite.name = string.Format("{0}{1}", x,y);
                 newSprite.GetComponent<UnityEngine.UI.Image>().sprite = emoji;
 
                 newSprite.GetComponent<Button>().onClick.AddListener(() => {

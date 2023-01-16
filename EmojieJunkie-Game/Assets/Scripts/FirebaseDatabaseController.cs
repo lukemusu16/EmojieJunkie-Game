@@ -37,7 +37,7 @@ public class FirebaseDatabaseController : MonoBehaviour
 
     public void CreateLobby(String lobbyCode, String player1Name)
     {
-        LobbyData lobby = new LobbyData(lobbyCode, player1Name, "", (int)GameState.LOBBY);
+        LobbyData lobby = new LobbyData(lobbyCode, player1Name, "", (int)GameState.LOBBY, "");
         _reference.Child("lobbyData").Child(lobbyCode).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
         _reference.Child("lobbyData").Child(lobbyCode).ValueChanged += HandleValueChanged;
 
@@ -102,9 +102,20 @@ public class FirebaseDatabaseController : MonoBehaviour
             Dictionary<String, object> snapshotData = new Dictionary<string, object>();
             snapshotData = (Dictionary<String, object>)snapshot.Value;
 
-            print(snapshotData["gameState"]);
             snapshotData["gameState"] = gamestate;
-            print(snapshotData["gameState"]);
+            UpdateLobbyData(lobbyCode, snapshotData);
+        });
+    }
+
+    public void UpdatePhrase(string lobbyCode, string secretPhrase)
+    {
+        _reference.Child("lobbyData").Child(lobbyCode).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            DataSnapshot snapshot = task.Result;
+            Dictionary<String, object> snapshotData = new Dictionary<string, object>();
+            snapshotData = (Dictionary<String, object>)snapshot.Value;
+
+            snapshotData["secretPhrase"] = secretPhrase;
             UpdateLobbyData(lobbyCode, snapshotData);
         });
     }
@@ -123,6 +134,7 @@ public class FirebaseDatabaseController : MonoBehaviour
         GlobalValues.Player1 = (string)snapshotData["player1Name"];
         GlobalValues.Player2 = (string)snapshotData["player2Name"];
         GlobalValues.State = Convert.ToInt16(snapshotData["gameState"]);
+        GlobalValues.SecretPhrase = (string)snapshotData["secretPhrase"];
 
         if (GlobalValues.State == (int)GameState.LOBBY)
         {

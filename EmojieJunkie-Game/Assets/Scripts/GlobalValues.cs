@@ -9,6 +9,7 @@ public static class GlobalValues
     private static int state;
     private static string thisPlayer = "";
     private static string lobbyCode = "";
+    private static string secretPhrase = "";
 
 
     public static string Player1
@@ -25,6 +26,9 @@ public static class GlobalValues
 
     public static string LobbyCode
     { get { return lobbyCode; } set { lobbyCode = value; } }
+
+    public static string SecretPhrase
+    { get { return secretPhrase; } set { secretPhrase = value; } }
 
 
 }
