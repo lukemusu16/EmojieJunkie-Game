@@ -10,6 +10,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using System.ComponentModel;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using System.Linq;
 
 public class FirebaseDatabaseController : MonoBehaviour
 {
@@ -37,7 +39,7 @@ public class FirebaseDatabaseController : MonoBehaviour
 
     public void CreateLobby(String lobbyCode, String player1Name)
     {
-        LobbyData lobby = new LobbyData(lobbyCode, player1Name, "", (int)GameState.LOBBY, "");
+        LobbyData lobby = new LobbyData(lobbyCode, player1Name, "", (int)GameState.LOBBY, "", GlobalValues.GameObject0, GlobalValues.GameObject1, GlobalValues.GameObject2, GlobalValues.GameObject3, GlobalValues.GameObject4);
         _reference.Child("lobbyData").Child(lobbyCode).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
         _reference.Child("lobbyData").Child(lobbyCode).ValueChanged += HandleValueChanged;
 
@@ -120,6 +122,24 @@ public class FirebaseDatabaseController : MonoBehaviour
         });
     }
 
+    public void UpdateGameObjects(string lobbyCode, string go0, string go1, string go2, string go3, string go4)
+    {
+        _reference.Child("lobbyData").Child(lobbyCode).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            DataSnapshot snapshot = task.Result;
+            Dictionary<String, object> snapshotData = new Dictionary<string, object>();
+            snapshotData = (Dictionary<String, object>)snapshot.Value;
+
+            snapshotData["gameObjects0"] = go0;
+            snapshotData["gameObjects1"] = go1;
+            snapshotData["gameObjects2"] = go2;
+            snapshotData["gameObjects3"] = go3;
+            snapshotData["gameObjects4"] = go4;
+
+            UpdateLobbyData(lobbyCode, snapshotData);
+        });
+    }
+
     void HandleValueChanged(object sender, ValueChangedEventArgs args)
     {
         if (args.DatabaseError != null)
@@ -135,6 +155,15 @@ public class FirebaseDatabaseController : MonoBehaviour
         GlobalValues.Player2 = (string)snapshotData["player2Name"];
         GlobalValues.State = Convert.ToInt16(snapshotData["gameState"]);
         GlobalValues.SecretPhrase = (string)snapshotData["secretPhrase"];
+
+        GlobalValues.GameObject0 = (string)snapshotData["gameObjects0"];
+        GlobalValues.GameObject1 = (string)snapshotData["gameObjects1"];
+        GlobalValues.GameObject2 = (string)snapshotData["gameObjects2"];
+        GlobalValues.GameObject3 = (string)snapshotData["gameObjects3"];
+        GlobalValues.GameObject4 = (string)snapshotData["gameObjects4"];
+
+
+
 
         if (GlobalValues.State == (int)GameState.LOBBY)
         {

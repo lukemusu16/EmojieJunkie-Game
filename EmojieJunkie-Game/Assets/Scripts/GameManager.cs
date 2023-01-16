@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
 
         currentConverter = GlobalValues.Player1;
         currentGuesser   = GlobalValues.Player2;
+        
 
         if (GlobalValues.ThisPlayer == currentConverter)
         {

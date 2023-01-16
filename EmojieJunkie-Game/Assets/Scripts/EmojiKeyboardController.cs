@@ -24,6 +24,7 @@ public class EmojiKeyboardController : MonoBehaviour
     public Texture2D img;
 
     public List<GameObject> emojis = new List<GameObject>();
+    
 
     private void Awake()
     {
@@ -45,6 +46,16 @@ public class EmojiKeyboardController : MonoBehaviour
         confirmBTN.GetComponent<Button>().onClick.AddListener(() =>
         {
             gm.StopAllCoroutines();
+
+
+            GlobalValues.GameObject0 = emojis[0].name;
+            GlobalValues.GameObject1 = emojis[1].name;
+            GlobalValues.GameObject2 = emojis[2].name;
+            GlobalValues.GameObject3 = emojis[3].name;
+            GlobalValues.GameObject4 = emojis[4].name;
+
+            FirebaseDatabaseController.Instance.UpdateGameObjects(GlobalValues.LobbyCode, GlobalValues.GameObject0, GlobalValues.GameObject1, GlobalValues.GameObject2, GlobalValues.GameObject3, GlobalValues.GameObject4);
+            
             keyboard.SetActive(false);
             submitted = true;
             GlobalValues.State = (int)GameState.GUESS;
@@ -77,6 +88,7 @@ public class EmojiKeyboardController : MonoBehaviour
                     if (emojis.Count < 5)
                     {
                         GameObject selectedEmoji = Instantiate(emojiPrefab, GameObject.Find("EmojiContainer").transform);
+                        selectedEmoji.name = newSprite.name;
                         selectedEmoji.GetComponent<UnityEngine.UI.Image>().sprite = emoji;
                         emojis.Add(selectedEmoji);
                     }
