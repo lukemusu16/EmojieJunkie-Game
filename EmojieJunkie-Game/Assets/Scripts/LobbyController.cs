@@ -13,7 +13,7 @@ public class LobbyController : MonoBehaviour
     private TMP_InputField lobbyCodeINP;
     private TMP_InputField playerNameINP;
 
-    private GameObject startBTN;
+    public GameObject startBTN;
 
     private string lobbyText;
 
@@ -35,20 +35,13 @@ public class LobbyController : MonoBehaviour
 
         startBTN = GameObject.Find("StartBTN");
         startBTN.GetComponent<Button>().onClick.AddListener(() => {
-            SceneManager.LoadScene("GameScene");
+            GlobalValues.State = GameState.CONVERT;
+            SceneManager.LoadScene("MainGame");
         });
         startBTN.SetActive(false);
 
         mc = GameObject.Find("MenuController").GetComponent<MenuController>();
         mc.GoToPlayerNameModal();
-    }
-
-    private void Update()
-    {
-        if (checking)
-        {
-            StartCoroutine(checkForPlayer(lobbyText));
-        }
     }
 
     public void TransitionToPanel(int id)
@@ -66,7 +59,7 @@ public class LobbyController : MonoBehaviour
                     lobbyText = lobbyCodeINP.text;
 
                     mc.GoToLobby();
-
+                    GlobalValues.ThisPlayer = playerNameINP.text; 
                     //Saving the lobby to firebase RTDB
                     FirebaseDatabaseController.Instance.CreateLobby(lobbyCodeINP.text, playerNameINP.text);
 
@@ -78,6 +71,7 @@ public class LobbyController : MonoBehaviour
             case 2:
                 if (playerNameINP.text.Length > 2)
                 {
+                    GlobalValues.ThisPlayer = playerNameINP.text;
                     mc.GoToLobbyJoinOptions();
                 }
                 break;
@@ -113,18 +107,4 @@ public class LobbyController : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator checkForPlayer(String lobbyCode)
-    {
-        if (FirebaseDatabaseController.Instance.CheckForPlayer(lobbyCode))
-        {
-            playerJoined = true;
-            checking = false;
-            startBTN.SetActive(true);
-            
-        }
-        yield return new WaitForSeconds(2);
-
-        if(!playerJoined)
-            checkForPlayer(lobbyCode);
-    }
 }

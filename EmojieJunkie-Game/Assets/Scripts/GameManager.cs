@@ -9,6 +9,12 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+public enum GameState
+{ 
+    LOBBY,
+    CONVERT,
+    GUESS
+}
 public class GameManager : MonoBehaviour
 {
     private EmojiKeyboardController ekc;
@@ -49,14 +55,19 @@ public class GameManager : MonoBehaviour
         currentGuesser   = GlobalValues.Player2;
 
         GenerateRandomPhrase();
+        GlobalValues.State = GameState.CONVERT;
         StartCoroutine(StartTimer(5));
     }
 
     private void Update()
     {
-        if (timerExpired)
+        if (timerExpired && GlobalValues.State == GameState.CONVERT)
         {
             print("Give Full Points to Guesser");
+        }
+        else if (timerExpired && GlobalValues.State == GameState.GUESS)
+        {
+            print("Bozo didnt guess it");
         }
     }
 
@@ -136,10 +147,11 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void startTurn()
+    public void startTurn(string converter, string guesser)
     { 
         
     }
+
         
 
 }

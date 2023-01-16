@@ -6,10 +6,19 @@ public static class GlobalValues
 {
     private static string player1 = "";
     private static string player2 = "";
+    private static GameState state;
+    private static string thisPlayer = "";
+
 
     public static string Player1
     { get { return player1; } set { player1 = value; } }
 
     public static string Player2
     { get { return player2; } set { player2 = value; } }
+
+    public static GameState State
+    { get { return state; } set { state = value; } }
+
+    public static string ThisPlayer
+    { get { return thisPlayer; } set { thisPlayer = value; } }
 }
